@@ -1,0 +1,6 @@
+CREATE TABLE public.produto
+(
+    id serial NOT NULL PRIMARY KEY,
+    nome character varying(30) NOT NULL,
+    preco numeric(10,2) NOT NULL
+)

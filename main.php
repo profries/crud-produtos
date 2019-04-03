@@ -6,7 +6,21 @@
 
 
     function inserir(Produto $produto){
-        $GLOBALS['produtos'][] = $produto;
+        //inserir no banco postgresql
+        $conexao = "pgsql:host=localhost;dbname=app_produtos";
+        $usuario = "postgres";
+        $senha = "postgresql";
+
+        $pdo = new PDO($conexao,$usuario,$senha);
+
+        $comando = $pdo->prepare("INSERT INTO produto(nome,preco) VALUES (:nome, :preco)");
+
+        $comando->bindParam(':nome',$produto->nome);
+        $comando->bindParam(':preco',$produto->preco);
+
+        $comando->execute();
+
+        var_dump($pdo->lastInsertId());
     }
 
     function buscarPorId($id){
@@ -44,12 +58,14 @@
     }
 
 
-    inserir(new Produto(1,"mesa",539.20));
-    inserir(new Produto(2,"cadeira",135.30));
-    inserir(new Produto(3,"TV",3000));
-    inserir(new Produto(4,"radio",230));
+    //Visualizem se salvou corretamente
+    //O id é 0 porque é auto-increment.
+    inserir(new Produto(0,"mesa",539.20));
+    inserir(new Produto(0,"cadeira",135.30));
+    inserir(new Produto(0,"TV",3000));
+    inserir(new Produto(0,"radio",230));
 
-    print_r(buscarPorId(1));
+    /*print_r(buscarPorId(1));
 
     deletar(1);
     
@@ -57,7 +73,7 @@
     $produto->nome="dock";
     atualizar(4,$produto);
     
-    print_r(listar());
+    print_r(listar());*/
 
 
 ?>
