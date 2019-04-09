@@ -40,16 +40,27 @@
     }
 
     function listar(){
-        return $GLOBALS['produtos'];        
+        $conexao = "pgsql:host=localhost;dbname=app_produtos";
+        $usuario = "postgres";
+        $senha = "postgresql";
+        $pdo = new PDO($conexao, $usuario, $senha);
+        $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE,PDO::FETCH_ASSOC);
+        $pdo->setAttribute(PDO::ATTR_STRINGIFY_FETCHES,false);
+        $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES,false);
+        $q = "SELECT * FROM produto";
+        $comando = $pdo->prepare($q);
+        $comando->execute();
+        $objs = array();
+        while($linha = $comando->fetch(PDO::FETCH_OBJ))
+        {
+            $objs[] = $linha;
+        }
+        return($objs);
     }
 
     function deletar($id)
     {
-        foreach($GLOBALS['produtos'] as $i => $produto) 
-        {
-            if($produto->id === $id)
-                array_splice($GLOBALS['produtos'],$i,1);    
-        }
+        
     }
 
     function atualizar($id,Produto $produtoAlterado)
@@ -72,15 +83,15 @@
 //  inserir(new Produto(0,"cadeira",135.30));
 //  inserir(new Produto(0,"TV",3000));
 //  inserir(new Produto(0,"radio",230));
-    print_r(buscarPorId(1));
+    //print_r(buscarPorId(3));
 
     /*deletar(1);
     
     $produto = buscarPorId(4);
     $produto->nome="dock";
-    atualizar(4,$produto);
+    atualizar(4,$produto);*/
     
-    print_r(listar());*/
+    print_r(listar());
 
 
 ?>
