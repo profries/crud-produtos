@@ -24,11 +24,19 @@
     }
 
     function buscarPorId($id){
-        foreach($GLOBALS['produtos'] as $prod){
-            if($prod->id == $id)
-                return $prod;        
-        }
-        return null;
+        $conexao = "pgsql:host=localhost;dbname=app_produtos";
+        $usuario = "postgres";
+        $senha = "postgresql";
+        $pdo = new PDO($conexao, $usuario, $senha);
+        $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE,PDO::FETCH_ASSOC);
+        $pdo->setAttribute(PDO::ATTR_STRINGIFY_FETCHES,false);
+        $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES,false);
+        $q = "SELECT * FROM produto WHERE id=:id";
+        $comando = $pdo->prepare($q);
+        $comando->bindParam("id", $id);
+        $comando->execute();
+        $obj = $comando->fetch(PDO::FETCH_OBJ);
+        return($obj);
     }
 
     function listar(){
@@ -60,14 +68,13 @@
 
     //Visualizem se salvou corretamente
     //O id é 0 porque é auto-increment.
-    inserir(new Produto(0,"mesa",539.20));
-    inserir(new Produto(0,"cadeira",135.30));
-    inserir(new Produto(0,"TV",3000));
-    inserir(new Produto(0,"radio",230));
+//  inserir(new Produto(0,"mesa",539.20));
+//  inserir(new Produto(0,"cadeira",135.30));
+//  inserir(new Produto(0,"TV",3000));
+//  inserir(new Produto(0,"radio",230));
+    print_r(buscarPorId(1));
 
-    /*print_r(buscarPorId(1));
-
-    deletar(1);
+    /*deletar(1);
     
     $produto = buscarPorId(4);
     $produto->nome="dock";
