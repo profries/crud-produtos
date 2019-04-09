@@ -60,19 +60,34 @@
 
     function deletar($id)
     {
+        $conexao = "pgsql:host=localhost;dbname=app_produtos";
+        $usuario = "postgres";
+        $senha = "postgresql";
+        $pdo = new PDO($conexao, $usuario, $senha);
+
+        $qdeletar = "DELETE FROM produto WHERE id=:id";
+        $comando = $pdo->prepare($qdeletar);
+
+        $comando->bindParam(':id',$id);
+
+        $comando->execute();
         
     }
 
     function atualizar($id,Produto $produtoAlterado)
     {
-        foreach($GLOBALS['produtos'] as $i => $produto) 
-        {
-            if($produto->id === $id)
-            {
-                $produto->nome = $produtoAlterado->nome;    
-                $produto->preco = $produtoAlterado->preco;
-            }
-        }
+        $conexao = "pgsql:host=localhost;dbname=app_produtos";
+        $usuario = "postgres";
+        $senha = "postgresql";
+        $pdo = new PDO($conexao, $usuario, $senha);
+
+        $qAtualizar = "UPDATE produto SET nome=:nome, preco=:preco WHERE id=:id";            
+        $comando = $pdo->prepare($qAtualizar);
+
+        $comando->bindParam(":nome",$produtoAlterado->nome);
+        $comando->bindParam(":preco",$produtoAlterado->preco);
+        $comando->bindParam(":id",$id);
+        $comando->execute(); 
         
     }
 
@@ -81,15 +96,16 @@
     //O id é 0 porque é auto-increment.
 //  inserir(new Produto(0,"mesa",539.20));
 //  inserir(new Produto(0,"cadeira",135.30));
-//  inserir(new Produto(0,"TV",3000));
-//  inserir(new Produto(0,"radio",230));
-    //print_r(buscarPorId(3));
+//    inserir(new Produto(0,"TV",3000));
 
-    /*deletar(1);
+//    print_r(buscarPorId(3));
+
+//    deletar(3);
     
-    $produto = buscarPorId(4);
-    $produto->nome="dock";
-    atualizar(4,$produto);*/
+    $obj = buscarPorId(2);
+    $produto = new Produto(0,$obj->nome,floatval($obj->preco));
+    $produto->nome = "cadeira X";
+    atualizar(2,$produto);
     
     print_r(listar());
 
